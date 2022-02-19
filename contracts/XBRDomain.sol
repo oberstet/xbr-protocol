@@ -72,8 +72,11 @@ contract XBRDomain is XBRMaintained {
     /// Current XBR Nodes ("node directory");
     mapping(bytes16 => XBRTypes.Node) public nodes;
 
-    /// Index: node public key => (market ID, node ID)
+    /// Index: node public key => node ID
     mapping(bytes32 => bytes16) public nodesByKey;
+
+    /// Index: user => nodes owned
+    mapping(address => bytes16[]) public nodesByOwner;
 
     /// List of IDs of current XBR Domains.
     bytes16[] public domainIds;
@@ -300,6 +303,9 @@ contract XBRDomain is XBRMaintained {
         // update list of nodes for domain
         domains[domainId].nodes.push(nodeId);
 
+        // update list of nodes for owner
+        nodesByOwner[member].push(nodeId);
+
         // notify observers
         emit NodePaired(domainId, nodeId, paired, nodeKey, amount, config);
     }
@@ -323,7 +329,7 @@ contract XBRDomain is XBRMaintained {
         return nodesByKey[nodeKey];
     }
 
-    function getLicensedWorkersByNodeKey(bytes32 nodeKey) public view returns (uint32) {
+    function getLicensedWorkersByNodeKey(bytes32 nodeKey) public view returns (uint256) {
         // License for usage of one concurrent CrossbarFX worker for N XBR token held by the user (CrossbarFX licensee).
 
         // determine owner of (master) node
@@ -345,17 +351,31 @@ contract XBRDomain is XBRMaintained {
         require(owner != address(0), "INVALID_NODE_KEY_3");
         uint256 xbr_held = IERC20(network.token()).balanceOf(owner);
         uint256 xbr_node = nodes[nodesByKey[nodeKey]].amount;
-        uint256 xbr_total_nodes = xbr_node;
-
-        // perpetual, concurrent worker license (fx_price: XBR/worker)
-        uint32 fx_licensed_workers = 0;
-        if (xbr_held > 0) {
-            fx_licensed_workers = 10;
-        } else {
-            fx_licensed_workers = 5;
+        uint256 xbr_total_nodes = 0;
+        for (uint32 i = 0; i < nodesByOwner[owner].length; ++i) {
+            xbr_total_nodes += nodes[nodesByOwner[owner][i]].amount;
         }
 
         // concurrent workers as licensed according to XBR tokens for node
+        uint256 fx_licensed_workers = 0;
+        if (xbr_held >= 100000) {
+            // sponsor
+            fx_licensed_workers = 1000000;
+        } else if (xbr_held >= 100000) {
+            // supporter
+            fx_licensed_workers = 2000;
+        } else if (xbr_held >= 10000) {
+            // fan
+            fx_licensed_workers = 100;
+        } else if (xbr_held >= 1) {
+            // member
+            fx_licensed_workers = 20;
+        } else {
+            // registered user
+            fx_licensed_workers = 5;
+        }
+
+        // return licensed number of concurrent workers
         return fx_licensed_workers;
     }
 
