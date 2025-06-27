@@ -1,3 +1,6 @@
 include LICENSE
 recursive-include xbr/contract *.sol
 recursive-include xbr/abi *.json
+recursive-include autobahn/xbr/templates *
+recursive-include autobahn/xbr/test/catalog/schema *
+recursive-include autobahn/xbr/test/profile *

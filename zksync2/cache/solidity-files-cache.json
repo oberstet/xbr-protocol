@@ -1,0 +1,114 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/home/oberstet/scm/crossbario/xbr-protocol/zksync2/contracts/Greeter.sol": {
+      "lastModificationDate": 1645232593590,
+      "contentHash": "710e043179292234e8e9ec833f653a97",
+      "sourceName": "contracts/Greeter.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "./EIP712Types.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "Greeter"
+      ]
+    },
+    "/home/oberstet/scm/crossbario/xbr-protocol/zksync2/contracts/EIP712Types.sol": {
+      "lastModificationDate": 1645232651652,
+      "contentHash": "e74027e15bbedbf326759c3b7980baff",
+      "sourceName": "contracts/EIP712Types.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "EIP712Types"
+      ]
+    },
+    "/home/oberstet/scm/crossbario/xbr-protocol/zksync2/contracts/LOB.sol": {
+      "lastModificationDate": 1645234847950,
+      "contentHash": "569990bf17ad3d3a665a7b25a94b54a5",
+      "sourceName": "contracts/LOB.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "./EIP712Types.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "LOB"
+      ]
+    }
+  }
+}

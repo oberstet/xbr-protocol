@@ -10,6 +10,19 @@ SCOUR_FLAGS = --remove-descriptive-elements --enable-comment-stripping --enable-
 AWS_DEFAULT_REGION = eu-central-1
 AWS_S3_BUCKET_NAME = xbr.foundation
 
+XBRNETWORK=${HOME}/.local/bin/xbrnetwork
+
+test_mnemonic:
+	# python -m pytest -rsx autobahn/xbr/test/test_mnemonic.py
+	USE_TWISTED=1 trial autobahn.xbr.test
+
+clean_catalog:
+	cd ./autobahn/xbr/test/catalog && make clean
+
+rebuild_catalog:
+	cd ./autobahn/xbr/test/catalog && make distclean && make build
+
+
 default:
 	@echo 'Targets:'
 	@echo
@@ -366,3 +379,69 @@ upload_python: build_python
 publish_python: build_python
 	ls -la dist
 	twine upload dist/*
+
+download_exe:
+	curl -o $(XBRNETWORK) \
+		https://download.crossbario.com/xbrnetwork/linux-amd64/xbrnetwork-latest
+	chmod +x $(XBRNETWORK)
+	$(XBRNETWORK) version
+
+upload_exe:
+	aws s3 cp --acl public-read \
+		./dist/xbrnetwork \
+		s3://download.crossbario.com/xbrnetwork/linux-amd64/${XBRNETWORK_EXE_FILENAME}
+	aws s3 cp --acl public-read \
+		./dist/xbrnetwork \
+		s3://download.crossbario.com/xbrnetwork/linux-amd64/xbrnetwork-latest
+	# aws s3api copy-object --acl public-read --copy-source \
+	# 	download.crossbario.com/xbrnetwork/linux-amd64/${XBRNETWORK_EXE_FILENAME} \
+	# 	--bucket download.crossbario.com \
+	# 	--key xbrnetwork/linux-amd64/xbrnetwork-latest
+	aws cloudfront create-invalidation \
+		--distribution-id E2QIG9LNGCJSP9 --paths "/xbrnetwork/linux-amd64/*"
+
+test_xbr_schema:
+	USE_TWISTED=1 trial autobahn.xbr.test.schema
+	USE_ASYNCIO=1 pytest autobahn/xbr/test/schema
+
+# WEB3_INFURA_PROJECT_ID must be defined for this
+test_infura:
+	time -f "%e" python -c "from web3.auto.infura import w3; print(w3.isConnected())"
+
+test_xbr:
+	USE_TWISTED=1 trial autobahn.xbr
+
+test_xbr_cli:
+	xbrnetwork
+	xbrnetwork version
+	xbrnetwork get-member
+	xbrnetwork get-market --market=1388ddf6-fe36-4201-b1aa-cb7e36b4cfb3
+	xbrnetwork get-actor
+	xbrnetwork get-actor --market=1388ddf6-fe36-4201-b1aa-cb7e36b4cfb3
+
+test_xbr_web3:
+#	pytest -s -v -rfA autobahn/xbr/test/test_xbr_web3.py
+	trial autobahn/xbr/test/test_xbr_web3.py
+
+test_xbr_frealm:
+#	pytest -s -v -rfA autobahn/xbr/test/test_xbr_frealm.py
+	trial autobahn/xbr/test/test_xbr_frealm.py
+
+test_xbr_argon2:
+	USE_ASYNCIO=1 trial autobahn.xbr.test.test_xbr_argon2
+	USE_TWISTED=1 trial autobahn.xbr.test.test_xbr_argon2
+
+test_xbr_config:
+	USE_TWISTED=1 trial autobahn.xbr.test.test_xbr_config
+
+# deprecated with v21.2.1 (ABI files are no longer bundled in this package)
+abi_files:
+	curl -s https://xbr.network/lib/abi/xbr-protocol-latest.zip -o /tmp/xbr-protocol-latest.zip
+	unzip -t /tmp/xbr-protocol-latest.zip
+	rm -rf ${PWD}/autobahn/xbr/contracts
+	unzip /tmp/xbr-protocol-latest.zip -d ${PWD}/autobahn/xbr/contracts
+
+test_mnemonic:
+	# python -m pytest -rsx autobahn/xbr/test/test_mnemonic.py
+	USE_TWISTED=1 trial autobahn.xbr.test
+

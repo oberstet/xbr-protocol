@@ -259,16 +259,16 @@ library XBRTypes {
         // Block number when the catalog was created.
         uint256 created;
 
-        // Catalog sequence number.
+        // FbsRepository sequence number.
         uint32 seq;
 
-        // Catalog owner (aka "catalog publisher").
+        // FbsRepository owner (aka "catalog publisher").
         address owner;
 
-        // Catalog terms (IPFS Multihash).
+        // FbsRepository terms (IPFS Multihash).
         string terms;
 
-        // Catalog metadata (IPFS Multihash).
+        // FbsRepository metadata (IPFS Multihash).
         string meta;
 
         // This is the signature the member supplied for creating the catalog.
